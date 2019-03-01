@@ -1,0 +1,16 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: test-pod
+  namespace: kube-system
+spec:
+  containers:
+  - name: test-pod
+    image: nginx:1.11.10
+    volumeMounts:
+    - name: pvc
+      mountPath: "/mnt"
+  volumes:
+  - name: pvc
+    persistentVolumeClaim:
+      claimName: claim1

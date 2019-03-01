@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: default
+  labels:
+    app: nginx
+spec:
+  ports:
+  - name: web
+    port: 80
+  selector:
+    app: nginx
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx-web
+  namespace: default
+spec:
+  serviceName: nginx
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: myapp
+        image: ikubernetes/myapp:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 80
+        volumeMounts:
+        - name: nginx-www
+          mountPath: /usr/share/nginx/html
+          readOnly: true
+  volumeClaimTemplates:
+  - metadata:
+      name: nginx-www
+      annotations:
+        volume.beta.kubernetes.io/storage-class: "nfs-storage" 
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 3Gi
