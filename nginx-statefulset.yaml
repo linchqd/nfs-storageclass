@@ -46,6 +46,7 @@ spec:
       annotations:
         volume.beta.kubernetes.io/storage-class: "nfs-storage" 
     spec:
+      storageClassName: "nfs-storage"
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
